@@ -25,9 +25,7 @@
 ;;; Code:
 (ert-deftest elisp-test/first-test ()
   "A simple first test."
-  (should (equal (pp-to-string '(quote quote)) "'quote"))
-  (should (equal (pp-to-string '((quote a) (quote b))) "('a 'b)\n"))
-  (should (equal (pp-to-string '('a 'b)) "('a 'b)\n")))
+  (should (equal (elisp-test/add 1 1) 2)))
 
 (provide 'elisp-test-test)
 ;;; elisp-test-test.el ends here
