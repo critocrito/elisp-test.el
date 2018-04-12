@@ -1,9 +1,14 @@
-;;; elisp-test-test.el --- Unit tests for elisp-test.el -*- lexical-binding: t; -*-
+;;; elisp-tryout.el --- elisp-tryout.el  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2018  Christo
 
 ;; Author: Christo <christo@cryptodrunks.net>
-;; Keywords:
+;; URL: http://github.com/critocrito/elisp-test.el
+;; Created: 2018
+;; Version: 0.1
+;; Keywords: languages
+;; Package-Requires: ((emacs "24"))
+
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -20,12 +25,12 @@
 
 ;;; Commentary:
 
-;; Unit tests for elisp-testing.el.
+;; Test Emacs Lisp packaging.
 
 ;;; Code:
-(ert-deftest elisp-test/first-test ()
-  "A simple first test."
-  (should (equal (elisp-test/add 1 1) 2)))
+(defun elisp-tryout-add (a b)
+  "Add number A and B."
+  (+ a b))
 
-(provide 'elisp-test-test)
-;;; elisp-test-test.el ends here
+(provide 'elisp-tryout)
+;;; elisp-tryout.el ends here

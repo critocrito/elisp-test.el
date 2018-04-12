@@ -1,3 +1,4 @@
+dist
 .cask
 .dir-locals.el
 *.elc

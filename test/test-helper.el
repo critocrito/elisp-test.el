@@ -1,4 +1,4 @@
-;;; test-helper.el --- Test helpers for elisp-test-test.el.  -*- lexical-binding: t; -*-
+;;; test-helper.el --- Test helpers for elisp-tryout-test.el.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2018  Christo
 
@@ -23,10 +23,12 @@
 ;; Helper code for unit tests.
 
 ;;; Code:
+(declare-function undercover "undercover")
+
 (when (require 'undercover nil t)
   (undercover "*.el"))
 
-(require 'elisp-test)
+(require 'elisp-tryout)
 
 (message "Running tests on Emacs %s" emacs-version)
 
