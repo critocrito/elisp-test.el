@@ -11,6 +11,7 @@ env:
 matrix:
   fast_finish: true
   allow_failures:
+    - env: EVM_EMACS=emacs-26-pretest-travis
     - env: EVM_EMACS=emacs-git-snapshot-travis
 before_install:
   - curl -fsSkL https://gist.github.com/rejeep/ebcd57c3af83b049833b/raw > x.sh && source ./x.sh
