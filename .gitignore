@@ -1,4 +1,5 @@
 dist
+test/sandbox
 .cask
 .dir-locals.el
 *.elc

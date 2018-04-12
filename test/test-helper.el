@@ -25,8 +25,39 @@
 ;;; Code:
 (declare-function undercover "undercover")
 
+(require 'f)
+
+(defvar cpt-path
+  (f-parent (f-this-file)))
+
+(defvar elisp-tryout-test-path
+  (f-dirname (f-this-file)))
+
+(defvar elisp-tryout-root-path
+  (f-parent elisp-tryout-test-path))
+
+(defvar elisp-tryout-sandbox-path
+  (f-expand "sandbox" elisp-tryout-test-path))
+
+(when (f-exists? elisp-tryout-sandbox-path)
+  (error "Something is already in %s. Check and destroy it yourself" elisp-tryout-sandbox-path))
+
+(defmacro within-sandbox (&rest body)
+  "Evaluate BODY in an empty sandbox directory."
+  `(let ((default-directory elisp-tryout-sandbox-path))
+     (when (f-exists? elisp-tryout-sandbox-path)
+       (f-delete default-directory :force))
+     (f-mkdir elisp-tryout-sandbox-path)
+     ,@body
+     (f-delete default-directory :force)))
+
 (when (require 'undercover nil t)
   (undercover "*.el"))
+
+(require 'ert)
+(require 'el-mock)
+(eval-when-compile
+  (require 'cl))
 
 (require 'elisp-tryout)
 

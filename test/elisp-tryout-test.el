@@ -27,5 +27,10 @@
   "A simple first test."
   (should (equal (elisp-tryout-add 1 1) 2)))
 
+(ert-deftest elisp-tryout-sandboxed-test ()
+  "Run tests in a sandbox."
+  (within-sandbox
+   (should (equal (elisp-tryout-add 1 1) 2))))
+
 (provide 'elisp-tryout-test)
 ;;; elisp-tryout-test.el ends here
