@@ -23,9 +23,8 @@
 ;; Helper code for unit tests.
 
 ;;; Code:
-(declare-function undercover "undercover")
-
 (require 'f)
+(require 'undercover)
 
 (defvar cpt-path
   (f-parent (f-this-file)))
@@ -40,7 +39,7 @@
   (f-expand "sandbox" elisp-tryout-test-path))
 
 (when (f-exists? elisp-tryout-sandbox-path)
-  (error "Something is already in %s. Check and destroy it yourself" elisp-tryout-sandbox-path))
+  (error "Something is already in %s.  Check and destroy it yourself" elisp-tryout-sandbox-path))
 
 (defmacro within-sandbox (&rest body)
   "Evaluate BODY in an empty sandbox directory."
@@ -51,13 +50,7 @@
      ,@body
      (f-delete default-directory :force)))
 
-(when (require 'undercover nil t)
-  (undercover "*.el"))
-
-(require 'ert)
-(require 'el-mock)
-(eval-when-compile
-  (require 'cl))
+(undercover "*.el")
 
 (require 'elisp-tryout)
 

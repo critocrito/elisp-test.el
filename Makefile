@@ -46,6 +46,7 @@ lint : $(SRCS) clean-elc
 	${CASK} emacs $(EMACSFLAGS) \
 	--eval "(setq byte-compile-error-on-warn t)" \
 	-L . \
+	-L test \
 	-f batch-byte-compile ${SRCS} ${TEST_HELPER} ${TESTS}
 
 	# Run package-lint to check for packaging mistakes

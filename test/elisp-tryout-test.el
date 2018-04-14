@@ -23,6 +23,8 @@
 ;; Unit tests for elisp-tryout.el.
 
 ;;; Code:
+(require 'test-helper)
+
 (ert-deftest elisp-tryout/first-test ()
   "A simple first test."
   (should (equal (elisp-tryout-add 1 1) 2)))
