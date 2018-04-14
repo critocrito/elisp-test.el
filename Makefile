@@ -2,6 +2,8 @@ CASK ?= cask
 EMACS ?= emacs
 DIST ?= dist
 
+PKG_NAME = elisp-tryout
+
 EMACSFLAGS = --batch -Q
 EMACSBATCH = $(EMACS) $(EMACSFLAGS)
 
@@ -15,9 +17,10 @@ USER_ELPA_D = $(EMACS_D)/elpa
 SRCS = $(filter-out %-pkg.el, $(wildcard *.el))
 TESTS = $(filter-out %test-helper.el, $(wildcard test/*.el))
 TEST_HELPER = test/test-helper.el
-TAR = $(DIST)/elisp-tryout-$(VERSION).el
+BUNDLE = $(DIST)/$(PKG_NAME)-$(VERSION).el
+PKG_LOAD_PATH = $(USER_ELPA_D)/$(PKG_NAME)-$(VERSION)/$(PKG_NAME).el
 
-all : deps $(TAR)
+all : deps $(BUNDLE)
 
 deps :
 	${CASK} install --debug
@@ -35,8 +38,10 @@ clean-all : clean
 $(DIST) :
 	mkdir $(DIST)
 
-$(TAR) : $(DIST) $(SRCS)
-	$(CASK) package $(DIST)
+$(BUNDLE) : $(DIST) $(SRCS)
+	cp $(PKG_NAME).el $(BUNDLE)
+	# The following command throws an Wrong number of arguments error
+	# $(CASK) package $(DIST)
 
 test : $(PKG_DIR) clean-elc
 	${CASK} exec ert-runner -L . --reporter ert+duration
@@ -56,16 +61,17 @@ lint : $(SRCS) clean-elc
 	--eval "(package-initialize)" \
 	--eval "(package-refresh-contents)" \
 	-l package-lint.el \
-	-f package-lint-batch-and-exit elisp-tryout.el
+	-f package-lint-batch-and-exit $(PKG_NAME).el
 
 check : test lint
 
-install : $(TAR)
+install : $(BUNDLE)
 	$(EMACSBATCH) -l package -f package-initialize \
-	--eval '(package-install-file "$(PROJ_ROOT)/$(TAR)")'
+	--eval '(package-install-file "$(PROJ_ROOT)/$(BUNDLE)")'
+	# (progn (when (featurep '$(PKG_NAME)) (unload-feature '$(PKG_NAME))) (load "$(PKG_LOAD_PATH)"))
 
 uninstall :
-	rm -rf $(USER_ELPA_D)/hierarchy-*
+	rm -rf $(USER_ELPA_D)/$(PKG_NAME)-*
 
 reinstall : clean uninstall install
 
