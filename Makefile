@@ -1,8 +1,8 @@
 CASK ?= cask
 EMACS ?= emacs
+EMACSCLIENT ?= emacsclient
 DIST ?= dist
-
-PKG_NAME = elisp-tryout
+PKG_NAME ?= elisp-tryout
 
 EMACSFLAGS = --batch -Q
 EMACSBATCH = $(EMACS) $(EMACSFLAGS)
@@ -19,11 +19,13 @@ TESTS = $(filter-out %test-helper.el, $(wildcard test/*.el))
 TEST_HELPER = test/test-helper.el
 BUNDLE = $(DIST)/$(PKG_NAME)-$(VERSION).el
 PKG_LOAD_PATH = $(USER_ELPA_D)/$(PKG_NAME)-$(VERSION)/$(PKG_NAME).el
+UNLOAD_PKG_LISP = "(when (featurep '$(PKG_NAME)) (unload-feature '$(PKG_NAME)))"
+LOAD_PKG_LISP = "(load \"$(PKG_LOAD_PATH)\")"
 
 all : deps $(BUNDLE)
 
 deps :
-	${CASK} install --debug
+	$(CASK) install --debug
 
 clean-elc :
 	rm -f *.elc test/*.elc
@@ -40,7 +42,7 @@ $(DIST) :
 
 $(BUNDLE) : $(DIST) $(SRCS)
 	cp $(PKG_NAME).el $(BUNDLE)
-	# The following command throws an Wrong number of arguments error
+	# The following command throws a "Wrong number of arguments" error
 	# $(CASK) package $(DIST)
 
 test : $(PKG_DIR) clean-elc
@@ -63,15 +65,16 @@ lint : $(SRCS) clean-elc
 	-l package-lint.el \
 	-f package-lint-batch-and-exit $(PKG_NAME).el
 
-check : test lint
+check : lint test
 
 install : $(BUNDLE)
 	$(EMACSBATCH) -l package -f package-initialize \
 	--eval '(package-install-file "$(PROJ_ROOT)/$(BUNDLE)")'
-	# (progn (when (featurep '$(PKG_NAME)) (unload-feature '$(PKG_NAME))) (load "$(PKG_LOAD_PATH)"))
+	@type -p $(EMACSCLIENT) >/dev/null 2>&1 && $(EMACSCLIENT) -e $(LOAD_PKG_LISP) || echo $(LOAD_PKG_LISP)
 
 uninstall :
 	rm -rf $(USER_ELPA_D)/$(PKG_NAME)-*
+	@type -p $(EMACSCLIENT) >/dev/null 2>&1 && $(EMACSCLIENT) -e $(UNLOAD_PKG_LISP) || echo $(UNLOAD_PKG_LISP)
 
 reinstall : clean uninstall install
 
